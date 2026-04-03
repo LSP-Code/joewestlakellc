@@ -17,8 +17,7 @@
         .nav-link { display: flex; align-items: center; padding: 14px 28px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
         .nav-link.active { color: #fff; background: rgba(255,255,255,0.05); border-left: 4px solid #fff; }
         
-        /* Mobile Hamburger */
-        #menu-btn { display: none; position: fixed; top: 20px; right: 20px; z-index: 2000; background: #fff; color: #000; width: 50px; height: 50px; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; }
+        #menu-btn { display: none; position: fixed; top: 20px; right: 20px; z-index: 2000; background: #fff; color: #000; width: 50px; height: 50px; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; border-radius: 4px; }
         #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; backdrop-filter: blur(4px); }
 
         @media (max-width: 1024px) {
@@ -26,8 +25,15 @@
             .sidebar.open { transform: translateX(0); }
             #menu-btn { display: flex; }
             #overlay.show { display: block; }
-            .main-content { margin-left: 0 !important; padding: 1.5rem !important; padding-top: 90px !important; }
+            .main-content { margin-left: 0 !important; padding: 1rem !important; padding-top: 90px !important; }
             .header-title { font-size: 3.5rem !important; }
+
+            table, thead, tbody, th, td, tr { display: block; width: 100%; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; } 
+            tr { border: 1px solid var(--border); margin-bottom: 1rem; background: #080808; padding: 10px; }
+            td { border: none; position: relative; padding-left: 50% !important; text-align: right !important; padding-top: 12px !important; padding-bottom: 12px !important; border-bottom: 1px solid rgba(255,255,255,0.03); }
+            td:last-child { border-bottom: 0; text-align: center !important; padding-left: 0 !important; }
+            td::before { content: attr(data-label); position: absolute; left: 15px; width: 45%; text-align: left; font-weight: 900; text-transform: uppercase; font-size: 10px; color: #555; }
         }
 
         .main-content { margin-left: 280px; flex-grow: 1; padding: 3rem; width: 100%; max-width: 1400px; }
@@ -35,9 +41,7 @@
         .btn-primary { background: #fff; color: #000; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 16px 32px; border: none; cursor: pointer; }
         
         input, select, textarea { background: #0f0f0f !important; border: 1px solid var(--border) !important; color: white !important; padding: 14px !important; font-size: 0.85rem !important; width: 100%; outline: none; }
-        input:focus { border-color: #fff !important; }
         label { display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; color: #555; margin-bottom: 8px; }
-        
         .mono { font-family: 'Space Mono', monospace; }
         .hidden { display: none !important; }
     </style>
@@ -49,10 +53,9 @@
 
     <nav class="sidebar" id="sidebar">
         <div class="brand-area p-10">
-            <h1 class="text-2xl font-black tracking-tighter uppercase leading-none">Joe Westlake</h1>
-            <p class="text-[10px] text-gray-500 mt-2 font-bold tracking-[0.3em]">PAINTING LLC</p>
+            <h1 class="text-2xl font-black tracking-tighter uppercase leading-none">Joe Westlake LLC</h1>
+            <p class="text-[10px] text-gray-500 mt-2 font-bold tracking-[0.3em]">Business Management System</p>
         </div>
-        
         <div class="flex flex-col flex-grow overflow-y-auto">
             <div onclick="setPage('DASHBOARD')" id="nav-DASHBOARD" class="nav-link active"><i class="fas fa-grid-2 mr-4"></i><span>Overview</span></div>
             <div onclick="setPage('CUSTOMERS')" id="nav-CUSTOMERS" class="nav-link"><i class="fas fa-user-tie mr-4"></i><span>Clients</span></div>
@@ -61,12 +64,6 @@
             <div onclick="setPage('INCOME')" id="nav-INCOME" class="nav-link"><i class="fas fa-arrow-up mr-4"></i><span>Income</span></div>
             <div onclick="setPage('EXPENSES')" id="nav-EXPENSES" class="nav-link"><i class="fas fa-arrow-down mr-4"></i><span>Expenses</span></div>
             <div onclick="setPage('ARCHIVE')" id="nav-ARCHIVE" class="nav-link"><i class="fas fa-archive mr-4"></i><span>Archive</span></div>
-        </div>
-
-        <div class="p-8">
-            <a href="https://drive.google.com/file/d/1KR62WqH6_RqWRI8fOGwsXDnavPmutzvZ/view" target="_blank" class="block py-4 border border-white/20 text-[10px] font-black uppercase text-center hover:bg-white hover:text-black transition">
-                <i class="fab fa-android mr-2"></i> Download App
-            </a>
         </div>
     </nav>
 
@@ -81,65 +78,51 @@
             <button class="btn-primary w-full md:w-auto" onclick="openModal()">+ Add Entry</button>
         </header>
 
-        <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="stat-card"><label>Total Revenue</label><h3 id="stat-rev" class="text-4xl font-black mono text-green-500">$0.00</h3></div>
-            <div class="stat-card"><label>Outflow</label><h3 id="stat-exp" class="text-4xl font-black mono text-red-500">$0.00</h3></div>
-            <div class="stat-card"><label>Net Profit</label><h3 id="stat-net" class="text-4xl font-black mono">$0.00</h3></div>
+        <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <div class="stat-card"><label>Revenue</label><h3 id="stat-rev" class="text-3xl font-black mono text-green-500">$0.00</h3></div>
+            <div class="stat-card"><label>Outflow</label><h3 id="stat-exp" class="text-3xl font-black mono text-red-500">$0.00</h3></div>
+            <div class="stat-card"><label>Net</label><h3 id="stat-net" class="text-3xl font-black mono">$0.00</h3></div>
         </div>
 
-        <div class="border border-white/10 bg-[#050505] overflow-x-auto shadow-2xl">
-            <table class="w-full text-left min-w-[900px]">
-                <thead id="table-head" class="bg-white/5 border-b border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
-                </thead>
-                <tbody id="table-body" class="text-xs">
-                </tbody>
+        <div id="table-container" class="md:border border-white/10 bg-transparent md:bg-[#050505]">
+            <table class="w-full text-left">
+                <thead id="table-head" class="bg-white/5 border-b border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500"></thead>
+                <tbody id="table-body" class="text-xs"></tbody>
             </table>
         </div>
     </main>
 
-    <div id="modal" class="fixed inset-0 bg-black/95 z-[5000] hidden flex items-center justify-center p-6">
-        <div class="border border-white/20 w-full max-w-xl p-10 bg-[#0a0a0a]">
-            <h3 id="m-title" class="text-4xl font-black uppercase tracking-tighter mb-10">New Entry</h3>
-            <form id="entry-form" class="space-y-6">
+    <div id="modal" class="fixed inset-0 bg-black/95 z-[5000] hidden flex items-center justify-center p-4">
+        <div class="border border-white/20 w-full max-w-xl p-6 md:p-10 bg-[#0a0a0a] max-h-[90vh] overflow-y-auto">
+            <h3 id="m-title" class="text-3xl md:text-4xl font-black uppercase tracking-tighter mb-8">New Entry</h3>
+            <form id="entry-form" class="space-y-4 md:space-y-6">
                 <input type="hidden" id="entry-id">
+                <div><label id="label-desc">Description</label><input type="text" id="f-desc" required></div>
+                <div id="fields-contact" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label>Phone</label><input type="text" id="f-phone"></div>
+                    <div><label>Email</label><input type="email" id="f-email"></div>
+                </div>
+                <div id="fields-address" class="hidden"><label>Address</label><input type="text" id="f-address"></div>
                 
-                <div>
-                    <label id="label-desc">Description</label>
-                    <input type="text" id="f-desc" placeholder="Entry name..." required>
-                </div>
-
-                <div id="fields-contact" class="hidden grid grid-cols-2 gap-4">
-                    <div><label>Phone</label><input type="text" id="f-phone" placeholder="(352) 000-0000"></div>
-                    <div><label>Email</label><input type="email" id="f-email" placeholder="client@email.com"></div>
-                </div>
-
-                <div id="fields-address" class="hidden">
-                    <label>Address</label>
-                    <input type="text" id="f-address" placeholder="Site location...">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label>Amount ($)</label><input type="number" step="0.01" id="f-amt" placeholder="0.00"></div>
+                <div id="fields-financial" class="grid grid-cols-2 gap-4">
+                    <div><label>Amount ($)</label><input type="number" step="0.01" id="f-amt"></div>
                     <div>
                         <label>Status</label>
                         <select id="f-cat">
                             <option value="PENDING">Pending</option>
-                            <option value="PAID">Paid / Completed</option>
+                            <option value="PAID">Paid</option>
                             <option value="INVOICED">Invoiced</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3 bg-white/5 p-4 border border-white/10">
-                    <input type="checkbox" id="f-archived" class="!w-5 !h-5 !p-0">
-                    <label class="!mb-0 cursor-pointer" for="f-archived">Move to Archive (Hides from active views)</label>
+                    <input type="checkbox" id="f-archived" class="!w-5 !h-5">
+                    <label class="!mb-0" for="f-archived">Archive this entry</label>
                 </div>
-
-                <div><label>Link (Drive/PDF)</label><input type="url" id="f-link" placeholder="https://drive.google.com/..."></div>
-
-                <div class="flex flex-col md:flex-row gap-4 pt-6">
-                    <button type="submit" class="btn-primary flex-grow">Save Entry</button>
-                    <button type="button" onclick="closeModal()" class="border border-white/10 px-8 py-4 uppercase text-[10px] font-black">Cancel</button>
+                <div class="flex flex-col gap-4 pt-4">
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" onclick="closeModal()" class="border border-white/10 py-4 uppercase text-[10px] font-black">Cancel</button>
                 </div>
             </form>
         </div>
@@ -153,14 +136,11 @@
         const db = getFirestore(initializeApp(config));
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
         
-        let page = 'DASHBOARD';
-        let data = [];
-        let filter = '';
+        let page = 'DASHBOARD', data = [], filter = '';
 
         window.toggleMenu = () => {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('show');
-            document.getElementById('m-icon').classList.toggle('fa-bars fa-times');
         };
 
         window.setPage = (p) => {
@@ -169,25 +149,23 @@
             document.getElementById(`nav-${p}`).classList.add('active');
             document.getElementById('page-title').innerText = p === 'DASHBOARD' ? 'Overview' : p;
             document.getElementById('stats-grid').classList.toggle('hidden', p !== 'DASHBOARD');
-            if(window.innerWidth < 1024) toggleMenu();
+            if(window.innerWidth < 1024 && document.getElementById('sidebar').classList.contains('open')) toggleMenu();
             render();
         };
 
         window.openModal = (id = null) => {
-            const f = document.getElementById('entry-form');
-            f.reset();
+            document.getElementById('entry-form').reset();
             document.getElementById('entry-id').value = id || '';
-            document.getElementById('m-title').innerText = id ? 'Edit ' + page : 'New ' + page;
             
-            document.getElementById('label-desc').innerText = page === 'CUSTOMERS' ? 'Client Name' : (page === 'JOBS' ? 'Job Name' : 'Description');
             document.getElementById('fields-contact').classList.toggle('hidden', page !== 'CUSTOMERS');
             document.getElementById('fields-address').classList.toggle('hidden', page !== 'JOBS' && page !== 'CUSTOMERS');
-            
+            // HIDE Amount/Status fields specifically for Customers
+            document.getElementById('fields-financial').classList.toggle('hidden', page === 'CUSTOMERS');
+
             if(id) {
                 const item = data.find(i => i.id === id);
                 document.getElementById('f-desc').value = item.desc || '';
                 document.getElementById('f-amt').value = item.amt || '';
-                document.getElementById('f-link').value = item.link || '';
                 document.getElementById('f-phone').value = item.phone || '';
                 document.getElementById('f-address').value = item.address || '';
                 document.getElementById('f-cat').value = item.cat || 'PENDING';
@@ -197,22 +175,19 @@
         };
 
         window.closeModal = () => document.getElementById('modal').classList.add('hidden');
-        window.del = async (id) => { if(confirm('Delete forever?')) await deleteDoc(doc(db, 'records', id)); };
+        window.del = async (id) => { if(confirm('Delete?')) await deleteDoc(doc(db, 'records', id)); };
 
         document.getElementById('entry-form').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('entry-id').value;
-            let type = (['EXPENSES', 'PAYROLL'].includes(page)) ? 'OUT' : 'IN';
-
             const payload = {
                 desc: document.getElementById('f-desc').value,
-                amt: parseFloat(document.getElementById('f-amt').value) || 0,
-                link: document.getElementById('f-link').value,
+                amt: page === 'CUSTOMERS' ? 0 : (parseFloat(document.getElementById('f-amt').value) || 0),
                 phone: document.getElementById('f-phone').value,
                 address: document.getElementById('f-address').value,
-                cat: document.getElementById('f-cat').value,
+                cat: page === 'CUSTOMERS' ? 'CONTACT' : document.getElementById('f-cat').value,
                 archived: document.getElementById('f-archived').checked,
-                type: type,
+                type: (['EXPENSES', 'PAYROLL'].includes(page)) ? 'OUT' : 'IN',
                 originPage: page === 'ARCHIVE' ? (id ? data.find(i=>i.id===id).originPage : 'INCOME') : page,
                 updated: serverTimestamp()
             };
@@ -220,8 +195,6 @@
             else await addDoc(collection(db, 'records'), payload);
             closeModal();
         };
-
-        document.getElementById('search').oninput = (e) => { filter = e.target.value.toLowerCase(); render(); };
 
         onSnapshot(query(collection(db, 'records'), orderBy("updated", "desc")), (s) => {
             data = s.docs.map(d => ({id: d.id, ...d.data()}));
@@ -233,15 +206,19 @@
             const body = document.getElementById('table-body');
             let rev = 0, exp = 0;
 
-            head.innerHTML = `<tr><th class="py-6 px-8">Description</th>${(page === 'CUSTOMERS' || page === 'JOBS') ? `<th class="py-6 px-8">Details</th>` : ''}<th class="py-6 px-8">Status</th><th class="py-6 px-8 text-right">Amount</th><th class="py-6 px-8 text-center">Actions</th></tr>`;
+            const isCustomerPage = page === 'CUSTOMERS';
+
+            head.innerHTML = `<tr>
+                <th class="py-6 px-8">Description</th>
+                <th class="py-6 px-8">Details</th>
+                ${!isCustomerPage ? '<th class="py-6 px-8">Status</th><th class="py-6 px-8 text-right">Amount</th>' : ''}
+                <th class="py-6 px-8 text-center">Actions</th>
+            </tr>`;
 
             const filtered = data.filter(d => {
                 const searchMatch = d.desc.toLowerCase().includes(filter);
                 const isArchivePage = page === 'ARCHIVE';
                 const matchesPage = page === 'DASHBOARD' || d.originPage === page;
-                
-                // If on Archive page, show everything that is archived. 
-                // If on any other page, ONLY show items that are NOT archived.
                 if (isArchivePage) return d.archived && searchMatch;
                 return !d.archived && matchesPage && searchMatch;
             });
@@ -249,14 +226,16 @@
             body.innerHTML = filtered.map(d => {
                 if(d.type === 'IN') rev += d.amt; else exp += d.amt;
                 return `
-                <tr class="border-b border-white/5 hover:bg-white/[0.02]">
-                    <td class="py-6 px-8 font-black uppercase">${d.desc}</td>
-                    ${(page === 'CUSTOMERS' || page === 'JOBS') ? `<td class="py-6 px-8 text-gray-500">${d.address || d.phone || '—'}</td>` : ''}
-                    <td class="py-6 px-8"><span class="px-3 py-1 bg-white/5 text-[9px] font-black">${d.cat}</span></td>
-                    <td class="py-6 px-8 text-right mono font-black ${d.type === 'IN' ? 'text-green-500' : 'text-red-500'}">${fmt.format(d.amt)}</td>
+                <tr class="group">
+                    <td data-label="Description" class="py-6 px-8 font-black uppercase">${d.desc}</td>
+                    <td data-label="Details" class="py-6 px-8 text-gray-500">${d.address || d.phone || '—'}</td>
+                    ${!isCustomerPage ? `
+                        <td data-label="Status" class="py-6 px-8"><span class="px-3 py-1 bg-white/5 text-[9px] font-black">${d.cat}</span></td>
+                        <td data-label="Amount" class="py-6 px-8 text-right mono font-black ${d.type === 'IN' ? 'text-green-500' : 'text-red-500'}">${fmt.format(d.amt)}</td>
+                    ` : ''}
                     <td class="py-6 px-8 text-center">
-                        <button onclick="openModal('${d.id}')" class="p-2 text-gray-500 hover:text-white"><i class="fas fa-edit"></i></button>
-                        <button onclick="del('${d.id}')" class="p-2 text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                        <button onclick="openModal('${d.id}')" class="p-2 text-gray-400"><i class="fas fa-edit"></i></button>
+                        <button onclick="del('${d.id}')" class="p-2 text-gray-400 hover:text-red-500"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>`;
             }).join('');
