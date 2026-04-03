@@ -2,362 +2,208 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joe Westlake LLC | Business Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Joe Westlake LLC | Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono&display=swap');
-        :root { --accent: #fff; --border: rgba(255, 255, 255, 0.1); --bg: #000; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; margin: 0; }
+        :root { --border: rgba(255, 255, 255, 0.1); }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; min-height: 100vh; }
+
+        /* Sidebar & Nav */
+        .sidebar { width: 260px; background: #050505; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
+        .nav-link { display: flex; align-items: center; padding: 14px 24px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
+        .nav-link.active { color: #fff; background: rgba(255,255,255,0.05); border-left: 4px solid #fff; }
+
+        /* Main Layout */
+        .main-content { margin-left: 260px; flex-grow: 1; padding: 2.5rem; width: 100%; max-width: 1600px; }
+        .stat-card { padding: 1.5rem; border: 1px solid var(--border); background: #080808; border-radius: 4px; }
+        .btn-primary { background: #fff; color: #000; font-weight: 900; text-transform: uppercase; font-size: 0.7rem; padding: 14px 24px; border: none; cursor: pointer; }
         
-        .sidebar { 
-            width: 280px; 
-            height: 100vh; 
-            position: fixed; 
-            left: 0; 
-            top: 0; 
-            border-right: 1px solid var(--border); 
-            background: #050505; 
-            z-index: 40; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-y: auto; 
+        /* Mobile Overrides */
+        @media (max-width: 1024px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: 75px; top: auto; bottom: 0; flex-direction: row; border-right: none; border-top: 1px solid #333; background: #000; z-index: 9999; position: fixed; }
+            .sidebar .brand-area, .sidebar .footer-nav { display: none !important; }
+            .nav-link { flex-direction: column; justify-content: center; padding: 0; font-size: 7px; flex: 1; border-left: none !important; text-align: center; }
+            .nav-link i { font-size: 1.25rem; margin-bottom: 4px; display: block; }
+            .nav-link.active { border-bottom: 4px solid #fff; background: transparent; }
+            .main-content { margin-left: 0; padding: 1.25rem; padding-bottom: 120px; }
+            .header-title { font-size: 2.75rem !important; }
         }
-
-        .nav-link { 
-            display: flex; 
-            align-items: center; 
-            padding: 10px 24px; 
-            color: rgba(255,255,255,0.4); 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.1em; 
-            font-size: 0.6rem; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            border-left: 2px solid transparent; 
-        }
-
-        .nav-link.active { color: #fff; background: rgba(255,255,255,0.05); border-left: 2px solid var(--accent); }
-        .main-content { margin-left: 280px; padding: 4rem; max-width: 1400px; }
-        .stat-card { padding: 2rem; border: 1px solid var(--border); background: #080808; }
-        
-        .btn-primary { 
-            background: #fff; 
-            color: #000; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            letter-spacing: 0.15em; 
-            font-size: 0.65rem; 
-            padding: 12px 24px; 
-            cursor: pointer; 
-            border: none; 
-        }
-
-        .btn-download {
-            margin: 20px;
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            font-size: 0.6rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-download:hover {
-            background: white;
-            color: black;
-            border-color: white;
-        }
-
-        .form-input { width: 100%; background: #0a0a0a !important; border: 1px solid var(--border) !important; padding: 12px 16px !important; color: #fff !important; font-size: 0.85rem; outline: none !important; border-radius: 0; }
         .mono { font-family: 'Space Mono', monospace; }
-        .action-btn { opacity: 0.3; transition: 0.2s; cursor: pointer; margin-left: 10px; }
-        tr:hover .action-btn { opacity: 1; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <div class="p-8 mb-4">
-            <h1 class="text-xl font-black tracking-tighter uppercase leading-tight">Joe Westlake LLC</h1>
-            <p class="text-[9px] text-gray-500 mt-2 uppercase tracking-[0.2em] font-bold leading-relaxed">Business Management System</p>
-        </div>
-        <div class="flex flex-col space-y-1">
-            <div onclick="setPage('DASHBOARD')" id="nav-DASHBOARD" class="nav-link active">Overview</div>
-            <div onclick="setPage('JOBS')" id="nav-JOBS" class="nav-link">Current Jobs</div>
-            <div onclick="setPage('INCOME')" id="nav-INCOME" class="nav-link">Income</div>
-            <div onclick="setPage('EXPENSE')" id="nav-EXPENSE" class="nav-link">Expenses</div>
-            <div onclick="setPage('INVOICES')" id="nav-INVOICES" class="nav-link">Invoices</div>
-            <div onclick="setPage('CUSTOMERS')" id="nav-CUSTOMERS" class="nav-link">Customers</div>
-            <div onclick="setPage('RECEIPTS')" id="nav-RECEIPTS" class="nav-link">Receipts</div>
-            <div onclick="setPage('PAYROLL')" id="nav-PAYROLL" class="nav-link">Payroll</div>
-            <div class="pt-4 mt-4 border-t border-white/5">
-                <div onclick="setPage('ARCHIVE')" id="nav-ARCHIVE" class="nav-link text-gray-600">Archive</div>
-            </div>
+        <div class="brand-area p-8">
+            <h1 class="text-xl font-black tracking-tighter uppercase leading-none">Joe Westlake LLC</h1>
+            <p class="text-[9px] text-gray-500 mt-2 font-bold tracking-[0.2em]">ADMIN PORTAL</p>
         </div>
         
-        <div class="mt-auto">
-            <a href="https://drive.google.com/file/d/1KR62WqH6_RqWRI8fOGwsXDnavPmutzvZ/view?usp=sharing" target="_blank" class="btn-download">
-                <i class="fab fa-android text-lg"></i>
-                Download App
+        <div class="flex flex-col flex-grow overflow-y-auto w-full">
+            <div onclick="setPage('DASHBOARD')" id="nav-DASHBOARD" class="nav-link active"><i class="fas fa-chart-line lg:mr-3"></i><span>Dashboard</span></div>
+            <div onclick="setPage('JOBS')" id="nav-JOBS" class="nav-link"><i class="fas fa-hammer lg:mr-3"></i><span>Jobs</span></div>
+            <div onclick="setPage('INVOICES')" id="nav-INVOICES" class="nav-link"><i class="fas fa-file-invoice lg:mr-3"></i><span>Invoices</span></div>
+            <div onclick="setPage('INCOME')" id="nav-INCOME" class="nav-link"><i class="fas fa-plus lg:mr-3"></i><span>Income</span></div>
+            <div onclick="setPage('EXPENSE')" id="nav-EXPENSE" class="nav-link"><i class="fas fa-minus lg:mr-3"></i><span>Expenses</span></div>
+            <div onclick="setPage('PAYROLL')" id="nav-PAYROLL" class="nav-link"><i class="fas fa-clock lg:mr-3"></i><span>Payroll</span></div>
+            <div onclick="setPage('CUSTOMERS')" id="nav-CUSTOMERS" class="nav-link"><i class="fas fa-user-friends lg:mr-3"></i><span>Clients</span></div>
+        </div>
+
+        <div class="footer-nav p-6">
+            <a href="https://drive.google.com/file/d/1KR62WqH6_RqWRI8fOGwsXDnavPmutzvZ/view?usp=sharing" target="_blank" class="block w-full py-4 border border-white/10 text-[10px] font-black uppercase text-center hover:bg-white hover:text-black transition">
+                <i class="fab fa-android mr-2"></i> Download App
             </a>
         </div>
     </nav>
 
     <main class="main-content">
-        <header class="flex justify-between items-end mb-16">
-            <h2 id="page-title" class="text-6xl font-black tracking-tighter uppercase">Overview</h2>
-            <button class="btn-primary" onclick="openModal()">+ Add Entry</button>
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+            <div>
+                <h2 id="page-title" class="header-title text-6xl md:text-7xl font-black tracking-tighter uppercase leading-none">Dashboard</h2>
+                <div id="search-container" class="mt-4 flex items-center bg-[#080808] border border-white/10 px-4 py-2 w-full max-w-sm">
+                    <i class="fas fa-search text-gray-500 mr-3 text-xs"></i>
+                    <input type="text" id="searchInput" placeholder="Search entries..." class="bg-transparent border-none text-white text-xs outline-none w-full uppercase font-bold tracking-widest">
+                </div>
+            </div>
+            <button class="btn-primary w-full md:w-auto" onclick="openModal()">+ Add Entry</button>
         </header>
 
-        <div id="page-container">
-            <div id="view-DASHBOARD">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                    <div class="stat-card"><p class="text-gray-500 text-[10px] uppercase font-bold mb-4">Total Revenue</p><h3 id="dash-income" class="text-4xl font-black mono">$0.00</h3></div>
-                    <div class="stat-card"><p class="text-gray-500 text-[10px] uppercase font-bold mb-4">Total Expenses</p><h3 id="dash-expenses" class="text-4xl font-black mono">$0.00</h3></div>
-                    <div class="stat-card"><p class="text-gray-500 text-[10px] uppercase font-bold mb-4">Net Margin</p><h3 id="dash-profit" class="text-4xl font-black mono">$0.00</h3></div>
-                </div>
-                <div class="border border-white/10 overflow-hidden">
-                    <table class="w-full text-left">
-                        <thead><tr class="bg-white/5 text-gray-500 uppercase text-[9px] font-bold"><th class="py-5 px-8">Description</th><th class="py-5 px-8">Category</th><th class="py-5 px-8">Document</th><th class="py-5 px-8">Actions</th><th class="py-5 px-8 text-right">Amount</th></tr></thead>
-                        <tbody id="dash-table" class="text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div id="table-wrapper" class="border border-white/10 bg-[#050505] overflow-x-auto">
+            <table class="w-full text-left min-w-[800px] text-xs">
+                <thead>
+                    <tr class="bg-white/5 text-gray-500 uppercase text-[9px] font-black tracking-widest border-b border-white/10">
+                        <th class="py-5 px-8">Description / Entry</th>
+                        <th class="py-5 px-8">Section</th>
+                        <th class="py-5 px-8">Document</th>
+                        <th class="py-5 px-8 text-right">Amount</th>
+                        <th class="py-5 px-8 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="main-table-body">
+                    </tbody>
+            </table>
+        </div>
 
-            <div id="view-GENERIC" class="hidden">
-                <div class="border border-white/10 overflow-hidden">
-                    <table class="w-full text-left">
-                        <thead id="generic-head" class="bg-white/5 text-gray-500 uppercase text-[9px] font-bold"></thead>
-                        <tbody id="generic-body" class="text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div id="dash-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+            <div class="stat-card"><p class="text-gray-500 text-[9px] font-black uppercase mb-3 tracking-widest">Total Revenue</p><h3 id="stat-inc" class="text-4xl font-black mono text-green-400">$0.00</h3></div>
+            <div class="stat-card"><p class="text-gray-500 text-[9px] font-black uppercase mb-3 tracking-widest">Total Expenses</p><h3 id="stat-exp" class="text-4xl font-black mono text-red-400">$0.00</h3></div>
+            <div class="stat-card"><p class="text-gray-500 text-[9px] font-black uppercase mb-3 tracking-widest">Net Profit</p><h3 id="stat-net" class="text-4xl font-black mono">$0.00</h3></div>
         </div>
     </main>
 
-    <div id="masterModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] hidden flex items-center justify-center p-6">
-        <div class="border border-white/20 w-full max-w-xl p-12 bg-[#050505] max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-12"><h3 id="modal-label" class="text-3xl font-black uppercase tracking-tighter">New Entry</h3><button onclick="closeModal()" class="text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button></div>
-            <form id="masterForm">
-                <input type="hidden" id="edit-id">
-                <div id="form-fields" class="space-y-6"></div>
-                <div class="mt-8" id="drive-link-container"><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Google Drive Link</label><input type="url" id="driveUrl" class="form-input"></div>
-                <button type="submit" id="submit-btn" class="btn-primary w-full py-5 mt-10">Commit to Database</button>
+    <div id="masterModal" class="fixed inset-0 bg-black/95 z-[99999] hidden flex items-center justify-center p-4">
+        <div class="border border-white/20 w-full max-w-lg p-10 bg-[#080808]">
+            <h3 id="modal-title" class="text-3xl font-black uppercase tracking-tighter mb-8">Add New Entry</h3>
+            <form id="masterForm" class="space-y-6">
+                <input type="hidden" id="f_id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="text-[10px] uppercase font-black text-gray-500 mb-2 block">Description</label><input type="text" id="f_desc" class="w-full bg-[#0f0f0f] border border-white/10 p-4 text-white outline-none focus:border-white" required></div>
+                    <div><label class="text-[10px] uppercase font-black text-gray-500 mb-2 block">Amount ($)</label><input type="number" step="0.01" id="f_amt" class="w-full bg-[#0f0f0f] border border-white/10 p-4 text-white outline-none focus:border-white" required></div>
+                </div>
+                <div><label class="text-[10px] uppercase font-black text-gray-500 mb-2 block">Document / Receipt Link</label><input type="url" id="f_link" class="w-full bg-[#0f0f0f] border border-white/10 p-4 text-white outline-none focus:border-white" placeholder="https://drive.google.com/..."></div>
+                <div class="flex flex-col md:flex-row gap-3 pt-4">
+                    <button type="submit" class="btn-primary flex-grow">Commit to Firebase</button>
+                    <button type="button" onclick="closeModal()" class="border border-white/10 px-8 py-4 uppercase text-[10px] font-black hover:bg-white/5">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDn3fqrdVcRnvkiX7t6TPJWrngXSrM_1p4",
-            authDomain: "my-a-ab8f3.firebaseapp.com",
-            projectId: "my-a-ab8f3",
-            storageBucket: "my-a-ab8f3.firebasestorage.app",
-            messagingSenderId: "65984042323",
-            appId: "1:65984042323:web:465363d942efc7b72c3da6"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyDn3fqrdVcRnvkiX7t6TPJWrngXSrM_1p4", authDomain: "my-a-ab8f3.firebaseapp.com", projectId: "my-a-ab8f3", storageBucket: "my-a-ab8f3.firebasestorage.app", messagingSenderId: "65984042323", appId: "1:65984042323:web:465363d942efc7b72c3da6" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const cur = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
         
         let currentPage = 'DASHBOARD';
-        const store = { DASHBOARD: [], INCOME: [], EXPENSE: [], CUSTOMERS: [], RECEIPTS: [], PAYROLL: [], INVOICES: [], JOBS: [], ARCHIVE: [] };
+        let store = [];
+        let searchTerm = '';
 
-        window.setPage = (p) => { 
-            currentPage = p; 
+        window.setPage = (p) => {
+            currentPage = p;
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             document.getElementById(`nav-${p}`).classList.add('active');
-            document.getElementById('page-title').innerText = p === 'JOBS' ? 'Current Jobs' : p;
-            document.getElementById('view-DASHBOARD').classList.toggle('hidden', p !== 'DASHBOARD');
-            document.getElementById('view-GENERIC').classList.toggle('hidden', p === 'DASHBOARD');
-            renderUI(); 
+            document.getElementById('page-title').innerText = p;
+            document.getElementById('dash-stats').classList.toggle('hidden', p !== 'DASHBOARD');
+            renderUI();
         };
 
-        window.toggleNewCustomerFields = (val) => {
-            const extra = document.getElementById('new-customer-fields');
-            if (val === 'NEW_CUSTOMER') extra.classList.remove('hidden');
-            else extra.classList.add('hidden');
-        };
-
-        window.openModal = (editData = null) => {
-            const container = document.getElementById('form-fields');
-            const driveContainer = document.getElementById('drive-link-container');
-            document.getElementById('masterModal').classList.remove('hidden');
-            document.getElementById('edit-id').value = editData ? editData.id : "";
-            document.getElementById('modal-label').innerText = editData ? "Edit Entry" : "New Entry";
-            
-            if (currentPage === 'CUSTOMERS') {
-                driveContainer.classList.add('hidden');
-                container.innerHTML = `
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Customer Name</label><input type="text" id="f1" class="form-input" value="${editData ? editData.description : ''}" required></div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Phone Number</label><input type="tel" id="f2_phone" class="form-input" value="${editData ? editData.phone : ''}" required></div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Email Address</label><input type="email" id="f3_email" class="form-input" value="${editData ? editData.email : ''}" required></div>
-                `;
-            } else if (currentPage === 'JOBS') {
-                driveContainer.classList.remove('hidden');
-                const options = store.CUSTOMERS.map(c => `<option value="${c.description}" ${editData?.customerName === c.description ? 'selected' : ''}>${c.description}</option>`).join('');
-                container.innerHTML = `
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Job Title / Description</label><input type="text" id="f1" class="form-input" value="${editData ? editData.description : ''}" required></div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Job Address</label><input type="text" id="job_address" class="form-input" value="${editData ? (editData.address || '') : ''}" required></div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Select Customer</label>
-                        <select id="job_customer" class="form-input" onchange="toggleNewCustomerFields(this.value)">
-                            <option value="">— Select Existing —</option>
-                            ${options}
-                            <option value="NEW_CUSTOMER">+ Add New Customer</option>
-                        </select>
-                    </div>
-                    <div id="new-customer-fields" class="hidden space-y-4 p-4 border border-white/10 bg-white/5">
-                        <p class="text-[9px] uppercase font-black text-amber-500">New Customer Details</p>
-                        <input type="text" id="new_cust_name" placeholder="Full Name" class="form-input">
-                        <input type="tel" id="new_cust_phone" placeholder="Phone" class="form-input">
-                        <input type="email" id="new_cust_email" placeholder="Email" class="form-input">
-                    </div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Project Estimate / Amount</label><input type="number" id="f2" step="0.01" class="form-input" value="${editData ? editData.amount : ''}" required></div>
-                `;
-            } else {
-                driveContainer.classList.remove('hidden');
-                container.innerHTML = `
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Description</label><input type="text" id="f1" class="form-input" value="${editData ? editData.description : ''}" required></div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Amount</label><input type="number" id="f2" step="0.01" class="form-input" value="${editData ? editData.amount : ''}" required></div>
-                    ${['DASHBOARD', 'INCOME', 'EXPENSE'].includes(currentPage) ? `<div><label class="text-[10px] uppercase font-black text-gray-500 block mb-2">Type</label><select id="f3" class="form-input"><option value="INCOME" ${(editData?.type || currentPage) ==='INCOME'?'selected':''}>Income</option><option value="EXPENSE" ${(editData?.type || currentPage) ==='EXPENSE'?'selected':''}>Expense</option></select></div>` : ''}
-                `;
-                document.getElementById('driveUrl').value = editData ? editData.driveLink : "";
+        window.openModal = (id = null) => {
+            document.getElementById('masterForm').reset();
+            document.getElementById('f_id').value = id || '';
+            document.getElementById('modal-title').innerText = id ? 'Edit ' + currentPage : 'Add to ' + currentPage;
+            if(id) {
+                const item = store.find(i => i.id === id);
+                if(item) {
+                    document.getElementById('f_desc').value = item.description;
+                    document.getElementById('f_amt').value = item.amount;
+                    document.getElementById('f_link').value = item.driveLink || '';
+                }
             }
+            document.getElementById('masterModal').classList.remove('hidden');
         };
 
         window.closeModal = () => document.getElementById('masterModal').classList.add('hidden');
 
-        window.deleteEntry = async (id, collectionName) => {
-            if (!id || !collectionName) return;
-            if (confirm("Permanently delete this record?")) {
-                try {
-                    await deleteDoc(doc(db, collectionName, id));
-                } catch (err) {
-                    console.error("Delete failed:", err);
-                    alert("Error deleting record.");
-                }
-            }
-        };
+        window.deleteEntry = async (id) => { if(confirm('Permanently delete this entry?')) await deleteDoc(doc(db, 'transactions', id)); };
 
         document.getElementById('masterForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const id = document.getElementById('edit-id').value;
-            const colName = ['DASHBOARD', 'INCOME', 'EXPENSE'].includes(currentPage) ? 'transactions' : currentPage.toLowerCase();
-            
-            let data = { date: serverTimestamp() };
-
-            if (currentPage === 'CUSTOMERS') {
-                data.description = document.getElementById('f1').value;
-                data.phone = document.getElementById('f2_phone').value;
-                data.email = document.getElementById('f3_email').value;
-            } else if (currentPage === 'JOBS') {
-                data.description = document.getElementById('f1').value;
-                data.address = document.getElementById('job_address').value;
-                data.amount = parseFloat(document.getElementById('f2').value) || 0;
-                data.driveLink = document.getElementById('driveUrl').value;
-                
-                const custVal = document.getElementById('job_customer').value;
-                if (custVal === 'NEW_CUSTOMER') {
-                    const newName = document.getElementById('new_cust_name').value;
-                    await addDoc(collection(db, 'customers'), {
-                        description: newName,
-                        phone: document.getElementById('new_cust_phone').value,
-                        email: document.getElementById('new_cust_email').value,
-                        date: serverTimestamp()
-                    });
-                    data.customerName = newName;
-                } else {
-                    data.customerName = custVal;
-                }
-            } else {
-                data.description = document.getElementById('f1').value;
-                data.amount = parseFloat(document.getElementById('f2').value) || 0;
-                data.type = document.getElementById('f3')?.value || (['RECEIPTS', 'PAYROLL', 'EXPENSE', 'ARCHIVE'].includes(currentPage) ? 'EXPENSE' : 'INCOME');
-                data.driveLink = document.getElementById('driveUrl').value;
-            }
-
-            if (id) await updateDoc(doc(db, colName, id), data);
-            else await addDoc(collection(db, colName), data);
+            const id = document.getElementById('f_id').value;
+            const data = {
+                description: document.getElementById('f_desc').value,
+                amount: parseFloat(document.getElementById('f_amt').value),
+                driveLink: document.getElementById('f_link').value,
+                type: (['EXPENSE', 'PAYROLL', 'INVOICES'].includes(currentPage)) ? 'EXPENSE' : 'INCOME',
+                category: currentPage === 'DASHBOARD' ? 'GENERAL' : currentPage,
+                date: serverTimestamp()
+            };
+            if(id) await updateDoc(doc(db, 'transactions', id), data);
+            else await addDoc(collection(db, 'transactions'), data);
             closeModal();
         });
 
-        ['transactions', 'customers', 'receipts', 'payroll', 'invoices', 'jobs', 'archive'].forEach(c => {
-            onSnapshot(query(collection(db, c), orderBy("date", "desc")), (s) => {
-                const data = s.docs.map(d => ({id: d.id, ...d.data()}));
-                if (c === 'transactions') {
-                    store.DASHBOARD = data;
-                    store.INCOME = data.filter(d => d.type === 'INCOME');
-                    store.EXPENSE = data.filter(d => d.type === 'EXPENSE');
-                } else store[c.toUpperCase()] = data;
-                renderUI();
-            });
-        });
+        document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderUI(); });
+
+        onSnapshot(query(collection(db, 'transactions'), orderBy("date", "desc")), (s) => { store = s.docs.map(d => ({id: d.id, ...d.data()})); renderUI(); });
 
         function renderUI() {
-            const dashTable = document.getElementById('dash-table');
-            const genBody = document.getElementById('generic-body');
-            const genHead = document.getElementById('generic-head');
+            const tbody = document.getElementById('main-table-body');
+            let inc = 0, exp = 0;
+            
+            const filtered = store.filter(d => {
+                const matchesSearch = d.description.toLowerCase().includes(searchTerm) || d.category?.toLowerCase().includes(searchTerm);
+                const matchesPage = currentPage === 'DASHBOARD' || d.category === currentPage;
+                return matchesSearch && matchesPage;
+            });
 
-            const manualIncome = store.DASHBOARD.filter(d => d.type === 'INCOME').reduce((a, b) => a + b.amount, 0);
-            const invoiceIncome = store.INVOICES.reduce((a, b) => a + b.amount, 0);
-            const jobIncome = store.JOBS.reduce((a, b) => a + b.amount, 0);
-            const totalIncome = manualIncome + invoiceIncome + jobIncome;
-            const totalExpenses = store.DASHBOARD.filter(d => d.type === 'EXPENSE').reduce((a, b) => a + b.amount, 0) + store.RECEIPTS.reduce((a, b) => a + b.amount, 0) + store.PAYROLL.reduce((a, b) => a + b.amount, 0);
-
-            document.getElementById('dash-income').innerText = cur.format(totalIncome);
-            document.getElementById('dash-expenses').innerText = cur.format(totalExpenses);
-            document.getElementById('dash-profit').innerText = cur.format(totalIncome - totalExpenses);
-
-            const getRow = (d, col, originType) => {
-                const isCustomer = originType === 'CUSTOMERS';
-                const isJob = originType === 'JOBS';
-                const isExpense = ['RECEIPTS', 'PAYROLL', 'EXPENSE'].includes(originType);
-
+            tbody.innerHTML = filtered.map(d => {
+                if(d.type === 'INCOME') inc += d.amount; else exp += d.amount;
                 return `
                 <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                    <td class="py-6 px-8">
-                        <div class="font-bold uppercase tracking-tight">${d.description}</div>
-                        ${isJob ? `<div class="text-[9px] text-gray-500 font-bold mt-1 uppercase">${d.customerName || 'No Customer'} | ${d.address || 'No Address'}</div>` : ''}
+                    <td class="py-6 px-8 font-bold uppercase tracking-tight">${d.description}</td>
+                    <td class="py-6 px-8 text-[10px] text-gray-500 font-black uppercase tracking-widest">${d.category || d.type}</td>
+                    <td class="py-6 px-8">${d.driveLink ? `<a href="${d.driveLink}" target="_blank" class="text-[10px] border border-white/20 px-3 py-1 font-black hover:bg-white hover:text-black">VIEW DOC</a>` : '—'}</td>
+                    <td class="py-6 px-8 text-right mono font-black ${d.type === 'INCOME' ? 'text-green-400' : 'text-red-400'}">${cur.format(d.amount)}</td>
+                    <td class="py-6 px-8 text-center whitespace-nowrap">
+                        <button onclick="openModal('${d.id}')" class="text-[10px] font-black uppercase px-3 py-1 border border-white/10 hover:bg-white hover:text-black mr-2">Edit</button>
+                        <button onclick="deleteEntry('${d.id}')" class="text-[10px] font-black uppercase px-3 py-1 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white">Del</button>
                     </td>
-                    <td class="py-6 px-8 text-[10px] text-gray-500 font-bold uppercase tracking-widest">${isCustomer ? (d.phone || '—') : originType}</td>
-                    <td class="py-6 px-8">${isCustomer ? (d.email || '—') : (d.driveLink ? `<a href="${d.driveLink}" target="_blank" class="text-[10px] font-black border border-white/20 px-3 py-1 hover:bg-white hover:text-black transition uppercase">Link</a>` : '—')}</td>
-                    <td class="py-6 px-8">
-                        <i class="fas fa-edit action-btn text-blue-400" onclick='openModal(${JSON.stringify(d).replace(/'/g, "&apos;")})'></i>
-                        <i class="fas fa-trash action-btn text-red-500" onclick="deleteEntry('${d.id}', '${col}')"></i>
-                    </td>
-                    <td class="py-6 px-8 text-right font-black mono ${isCustomer ? '' : (isExpense ? 'text-red-400' : 'text-green-400')}">${isCustomer ? '—' : cur.format(d.amount)}</td>
                 </tr>`;
-            };
+            }).join('');
 
-            if (currentPage === 'DASHBOARD') {
-                const combined = [...store.DASHBOARD.map(d => ({...d, origin: d.type, col: 'transactions'})), ...store.INVOICES.map(d => ({...d, origin: 'INVOICES', col: 'invoices'})), ...store.JOBS.map(d => ({...d, origin: 'JOBS', col: 'jobs'}))].sort((a,b) => (b.date?.seconds || 0) - (a.date?.seconds || 0));
-                dashTable.innerHTML = combined.map(d => getRow(d, d.col, d.origin)).join('');
-            } else if (currentPage === 'CUSTOMERS') {
-                genHead.innerHTML = `<tr><th class="py-5 px-8">Customer Name</th><th class="py-5 px-8">Phone</th><th class="py-5 px-8">Email</th><th class="py-5 px-8">Actions</th><th class="py-5 px-8 text-right">—</th></tr>`;
-                genBody.innerHTML = store.CUSTOMERS.map(d => getRow(d, 'customers', 'CUSTOMERS')).join('');
-            } else if (currentPage === 'JOBS') {
-                genHead.innerHTML = `<tr><th class="py-5 px-8">Job & Client Info</th><th class="py-5 px-8">Source</th><th class="py-5 px-8">Doc</th><th class="py-5 px-8">Actions</th><th class="py-5 px-8 text-right">Estimate</th></tr>`;
-                genBody.innerHTML = store.JOBS.map(d => getRow(d, 'jobs', 'JOBS')).join('');
-            } else {
-                const colMap = { INCOME: 'transactions', EXPENSE: 'transactions', INVOICES: 'invoices', RECEIPTS: 'receipts', PAYROLL: 'payroll', ARCHIVE: 'archive' };
-                genHead.innerHTML = `<tr><th class="py-5 px-8">Entry</th><th class="py-5 px-8">Source</th><th class="py-5 px-8">Doc</th><th class="py-5 px-8">Actions</th><th class="py-5 px-8 text-right">Value</th></tr>`;
-                genBody.innerHTML = store[currentPage].map(d => getRow(d, colMap[currentPage] || currentPage.toLowerCase(), currentPage)).join('');
-            }
+            document.getElementById('stat-inc').innerText = cur.format(inc);
+            document.getElementById('stat-exp').innerText = cur.format(exp);
+            document.getElementById('stat-net').innerText = cur.format(inc - exp);
         }
     </script>
 </body>
