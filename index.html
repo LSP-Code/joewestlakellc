@@ -3,113 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Joe Westlake LLC | Management</title>
+    <title>Joe Westlake LLC | Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono&display=swap');
         :root { --border: rgba(255, 255, 255, 0.1); }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; min-height: 100vh; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
 
-        /* Sidebar & Nav */
-        .sidebar { width: 260px; background: #050505; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
-        .nav-link { display: flex; align-items: center; padding: 14px 24px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
+        /* Sidebar */
+        .sidebar { width: 280px; background: #050505; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 1000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-link { display: flex; align-items: center; padding: 14px 28px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
         .nav-link.active { color: #fff; background: rgba(255,255,255,0.05); border-left: 4px solid #fff; }
-
-        /* Main Layout */
-        .main-content { margin-left: 260px; flex-grow: 1; padding: 2.5rem; width: 100%; max-width: 1600px; }
-        .stat-card { padding: 1.5rem; border: 1px solid var(--border); background: #080808; border-radius: 4px; }
-        .btn-primary { background: #fff; color: #000; font-weight: 900; text-transform: uppercase; font-size: 0.7rem; padding: 14px 24px; border: none; cursor: pointer; }
         
-        /* Mobile Overrides */
+        /* Mobile Hamburger */
+        #menu-btn { display: none; position: fixed; top: 20px; right: 20px; z-index: 2000; background: #fff; color: #000; width: 50px; height: 50px; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; }
+        #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; backdrop-filter: blur(4px); }
+
         @media (max-width: 1024px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: 75px; top: auto; bottom: 0; flex-direction: row; border-right: none; border-top: 1px solid #333; background: #000; z-index: 9999; position: fixed; }
-            .sidebar .brand-area, .sidebar .footer-nav { display: none !important; }
-            .nav-link { flex-direction: column; justify-content: center; padding: 0; font-size: 7px; flex: 1; border-left: none !important; text-align: center; }
-            .nav-link i { font-size: 1.25rem; margin-bottom: 4px; display: block; }
-            .nav-link.active { border-bottom: 4px solid #fff; background: transparent; }
-            .main-content { margin-left: 0; padding: 1.25rem; padding-bottom: 120px; }
-            .header-title { font-size: 2.75rem !important; }
+            .sidebar { transform: translateX(-100%); width: 85%; max-width: 320px; }
+            .sidebar.open { transform: translateX(0); }
+            #menu-btn { display: flex; }
+            #overlay.show { display: block; }
+            .main-content { margin-left: 0 !important; padding: 1.5rem !important; padding-top: 90px !important; }
+            .header-title { font-size: 3.5rem !important; }
         }
+
+        .main-content { margin-left: 280px; flex-grow: 1; padding: 3rem; width: 100%; max-width: 1400px; }
+        .stat-card { padding: 1.5rem; border: 1px solid var(--border); background: #080808; }
+        .btn-primary { background: #fff; color: #000; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 16px 32px; border: none; cursor: pointer; }
+        
+        input, select, textarea { background: #0f0f0f !important; border: 1px solid var(--border) !important; color: white !important; padding: 14px !important; font-size: 0.85rem !important; width: 100%; outline: none; }
+        input:focus { border-color: #fff !important; }
+        label { display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+        
         .mono { font-family: 'Space Mono', monospace; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="brand-area p-8">
-            <h1 class="text-xl font-black tracking-tighter uppercase leading-none">Joe Westlake LLC</h1>
-            <p class="text-[9px] text-gray-500 mt-2 font-bold tracking-[0.2em]">ADMIN PORTAL</p>
+    <div id="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars" id="m-icon"></i></div>
+    <div id="overlay" onclick="toggleMenu()"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="brand-area p-10">
+            <h1 class="text-2xl font-black tracking-tighter uppercase leading-none">Joe Westlake</h1>
+            <p class="text-[10px] text-gray-500 mt-2 font-bold tracking-[0.3em]">PAINTING LLC</p>
         </div>
         
-        <div class="flex flex-col flex-grow overflow-y-auto w-full">
-            <div onclick="setPage('DASHBOARD')" id="nav-DASHBOARD" class="nav-link active"><i class="fas fa-chart-line lg:mr-3"></i><span>Dashboard</span></div>
-            <div onclick="setPage('JOBS')" id="nav-JOBS" class="nav-link"><i class="fas fa-hammer lg:mr-3"></i><span>Jobs</span></div>
-            <div onclick="setPage('INVOICES')" id="nav-INVOICES" class="nav-link"><i class="fas fa-file-invoice lg:mr-3"></i><span>Invoices</span></div>
-            <div onclick="setPage('INCOME')" id="nav-INCOME" class="nav-link"><i class="fas fa-plus lg:mr-3"></i><span>Income</span></div>
-            <div onclick="setPage('EXPENSE')" id="nav-EXPENSE" class="nav-link"><i class="fas fa-minus lg:mr-3"></i><span>Expenses</span></div>
-            <div onclick="setPage('PAYROLL')" id="nav-PAYROLL" class="nav-link"><i class="fas fa-clock lg:mr-3"></i><span>Payroll</span></div>
-            <div onclick="setPage('CUSTOMERS')" id="nav-CUSTOMERS" class="nav-link"><i class="fas fa-user-friends lg:mr-3"></i><span>Clients</span></div>
+        <div class="flex flex-col flex-grow overflow-y-auto">
+            <div onclick="setPage('DASHBOARD')" id="nav-DASHBOARD" class="nav-link active"><i class="fas fa-grid-2 mr-4"></i><span>Overview</span></div>
+            <div onclick="setPage('CUSTOMERS')" id="nav-CUSTOMERS" class="nav-link"><i class="fas fa-user-tie mr-4"></i><span>Clients</span></div>
+            <div onclick="setPage('JOBS')" id="nav-JOBS" class="nav-link"><i class="fas fa-paint-roller mr-4"></i><span>Active Jobs</span></div>
+            <div onclick="setPage('INVOICES')" id="nav-INVOICES" class="nav-link"><i class="fas fa-file-invoice-dollar mr-4"></i><span>Invoices</span></div>
+            <div onclick="setPage('INCOME')" id="nav-INCOME" class="nav-link"><i class="fas fa-arrow-up mr-4"></i><span>Income</span></div>
+            <div onclick="setPage('EXPENSES')" id="nav-EXPENSES" class="nav-link"><i class="fas fa-arrow-down mr-4"></i><span>Expenses</span></div>
+            <div onclick="setPage('ARCHIVE')" id="nav-ARCHIVE" class="nav-link"><i class="fas fa-archive mr-4"></i><span>Archive</span></div>
         </div>
 
-        <div class="footer-nav p-6">
-            <a href="https://drive.google.com/file/d/1KR62WqH6_RqWRI8fOGwsXDnavPmutzvZ/view?usp=sharing" target="_blank" class="block w-full py-4 border border-white/10 text-[10px] font-black uppercase text-center hover:bg-white hover:text-black transition">
+        <div class="p-8">
+            <a href="https://drive.google.com/file/d/1KR62WqH6_RqWRI8fOGwsXDnavPmutzvZ/view" target="_blank" class="block py-4 border border-white/20 text-[10px] font-black uppercase text-center hover:bg-white hover:text-black transition">
                 <i class="fab fa-android mr-2"></i> Download App
             </a>
         </div>
     </nav>
 
     <main class="main-content">
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
             <div>
-                <h2 id="page-title" class="header-title text-6xl md:text-7xl font-black tracking-tighter uppercase leading-none">Dashboard</h2>
-                <div id="search-container" class="mt-4 flex items-center bg-[#080808] border border-white/10 px-4 py-2 w-full max-w-sm">
-                    <i class="fas fa-search text-gray-500 mr-3 text-xs"></i>
-                    <input type="text" id="searchInput" placeholder="Search entries..." class="bg-transparent border-none text-white text-xs outline-none w-full uppercase font-bold tracking-widest">
+                <h2 id="page-title" class="header-title text-7xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85]">Overview</h2>
+                <div class="mt-6 flex items-center bg-[#080808] border border-white/10 px-5 py-3 w-full max-w-md">
+                    <input type="text" id="search" placeholder="FILTER..." class="!bg-transparent !border-none !p-0 !text-xs !font-bold !tracking-widest uppercase">
                 </div>
             </div>
             <button class="btn-primary w-full md:w-auto" onclick="openModal()">+ Add Entry</button>
         </header>
 
-        <div id="table-wrapper" class="border border-white/10 bg-[#050505] overflow-x-auto">
-            <table class="w-full text-left min-w-[800px] text-xs">
-                <thead>
-                    <tr class="bg-white/5 text-gray-500 uppercase text-[9px] font-black tracking-widest border-b border-white/10">
-                        <th class="py-5 px-8">Description / Entry</th>
-                        <th class="py-5 px-8">Section</th>
-                        <th class="py-5 px-8">Document</th>
-                        <th class="py-5 px-8 text-right">Amount</th>
-                        <th class="py-5 px-8 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="main-table-body">
-                    </tbody>
-            </table>
+        <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="stat-card"><label>Total Revenue</label><h3 id="stat-rev" class="text-4xl font-black mono text-green-500">$0.00</h3></div>
+            <div class="stat-card"><label>Outflow</label><h3 id="stat-exp" class="text-4xl font-black mono text-red-500">$0.00</h3></div>
+            <div class="stat-card"><label>Net Profit</label><h3 id="stat-net" class="text-4xl font-black mono">$0.00</h3></div>
         </div>
 
-        <div id="dash-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-            <div class="stat-card"><p class="text-gray-500 text-[9px] font-black uppercase mb-3 tracking-widest">Total Revenue</p><h3 id="stat-inc" class="text-4xl font-black mono text-green-400">$0.00</h3></div>
-            <div class="stat-card"><p class="text-gray-500 text-[9px] font-black uppercase mb-3 tracking-widest">Total Expenses</p><h3 id="stat-exp" class="text-4xl font-black mono text-red-400">$0.00</h3></div>
-            <div class="stat-card"><p class="text-gray-500 text-[9px] font-black uppercase mb-3 tracking-widest">Net Profit</p><h3 id="stat-net" class="text-4xl font-black mono">$0.00</h3></div>
+        <div class="border border-white/10 bg-[#050505] overflow-x-auto shadow-2xl">
+            <table class="w-full text-left min-w-[900px]">
+                <thead id="table-head" class="bg-white/5 border-b border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                </thead>
+                <tbody id="table-body" class="text-xs">
+                </tbody>
+            </table>
         </div>
     </main>
 
-    <div id="masterModal" class="fixed inset-0 bg-black/95 z-[99999] hidden flex items-center justify-center p-4">
-        <div class="border border-white/20 w-full max-w-lg p-10 bg-[#080808]">
-            <h3 id="modal-title" class="text-3xl font-black uppercase tracking-tighter mb-8">Add New Entry</h3>
-            <form id="masterForm" class="space-y-6">
-                <input type="hidden" id="f_id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 mb-2 block">Description</label><input type="text" id="f_desc" class="w-full bg-[#0f0f0f] border border-white/10 p-4 text-white outline-none focus:border-white" required></div>
-                    <div><label class="text-[10px] uppercase font-black text-gray-500 mb-2 block">Amount ($)</label><input type="number" step="0.01" id="f_amt" class="w-full bg-[#0f0f0f] border border-white/10 p-4 text-white outline-none focus:border-white" required></div>
+    <div id="modal" class="fixed inset-0 bg-black/95 z-[5000] hidden flex items-center justify-center p-6">
+        <div class="border border-white/20 w-full max-w-xl p-10 bg-[#0a0a0a]">
+            <h3 id="m-title" class="text-4xl font-black uppercase tracking-tighter mb-10">New Entry</h3>
+            <form id="entry-form" class="space-y-6">
+                <input type="hidden" id="entry-id">
+                
+                <div>
+                    <label id="label-desc">Description</label>
+                    <input type="text" id="f-desc" placeholder="Entry name..." required>
                 </div>
-                <div><label class="text-[10px] uppercase font-black text-gray-500 mb-2 block">Document / Receipt Link</label><input type="url" id="f_link" class="w-full bg-[#0f0f0f] border border-white/10 p-4 text-white outline-none focus:border-white" placeholder="https://drive.google.com/..."></div>
-                <div class="flex flex-col md:flex-row gap-3 pt-4">
-                    <button type="submit" class="btn-primary flex-grow">Commit to Firebase</button>
-                    <button type="button" onclick="closeModal()" class="border border-white/10 px-8 py-4 uppercase text-[10px] font-black hover:bg-white/5">Cancel</button>
+
+                <div id="fields-contact" class="hidden grid grid-cols-2 gap-4">
+                    <div><label>Phone</label><input type="text" id="f-phone" placeholder="(352) 000-0000"></div>
+                    <div><label>Email</label><input type="email" id="f-email" placeholder="client@email.com"></div>
+                </div>
+
+                <div id="fields-address" class="hidden">
+                    <label>Address</label>
+                    <input type="text" id="f-address" placeholder="Site location...">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label>Amount ($)</label><input type="number" step="0.01" id="f-amt" placeholder="0.00"></div>
+                    <div>
+                        <label>Status</label>
+                        <select id="f-cat">
+                            <option value="PENDING">Pending</option>
+                            <option value="PAID">Paid / Completed</option>
+                            <option value="INVOICED">Invoiced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 bg-white/5 p-4 border border-white/10">
+                    <input type="checkbox" id="f-archived" class="!w-5 !h-5 !p-0">
+                    <label class="!mb-0 cursor-pointer" for="f-archived">Move to Archive (Hides from active views)</label>
+                </div>
+
+                <div><label>Link (Drive/PDF)</label><input type="url" id="f-link" placeholder="https://drive.google.com/..."></div>
+
+                <div class="flex flex-col md:flex-row gap-4 pt-6">
+                    <button type="submit" class="btn-primary flex-grow">Save Entry</button>
+                    <button type="button" onclick="closeModal()" class="border border-white/10 px-8 py-4 uppercase text-[10px] font-black">Cancel</button>
                 </div>
             </form>
         </div>
@@ -119,91 +149,121 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyDn3fqrdVcRnvkiX7t6TPJWrngXSrM_1p4", authDomain: "my-a-ab8f3.firebaseapp.com", projectId: "my-a-ab8f3", storageBucket: "my-a-ab8f3.firebasestorage.app", messagingSenderId: "65984042323", appId: "1:65984042323:web:465363d942efc7b72c3da6" };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const cur = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+        const config = { apiKey: "AIzaSyDn3fqrdVcRnvkiX7t6TPJWrngXSrM_1p4", authDomain: "my-a-ab8f3.firebaseapp.com", projectId: "my-a-ab8f3", storageBucket: "my-a-ab8f3.firebasestorage.app", messagingSenderId: "65984042323", appId: "1:65984042323:web:465363d942efc7b72c3da6" };
+        const db = getFirestore(initializeApp(config));
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
         
-        let currentPage = 'DASHBOARD';
-        let store = [];
-        let searchTerm = '';
+        let page = 'DASHBOARD';
+        let data = [];
+        let filter = '';
+
+        window.toggleMenu = () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+            document.getElementById('m-icon').classList.toggle('fa-bars fa-times');
+        };
 
         window.setPage = (p) => {
-            currentPage = p;
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            page = p;
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById(`nav-${p}`).classList.add('active');
-            document.getElementById('page-title').innerText = p;
-            document.getElementById('dash-stats').classList.toggle('hidden', p !== 'DASHBOARD');
-            renderUI();
+            document.getElementById('page-title').innerText = p === 'DASHBOARD' ? 'Overview' : p;
+            document.getElementById('stats-grid').classList.toggle('hidden', p !== 'DASHBOARD');
+            if(window.innerWidth < 1024) toggleMenu();
+            render();
         };
 
         window.openModal = (id = null) => {
-            document.getElementById('masterForm').reset();
-            document.getElementById('f_id').value = id || '';
-            document.getElementById('modal-title').innerText = id ? 'Edit ' + currentPage : 'Add to ' + currentPage;
+            const f = document.getElementById('entry-form');
+            f.reset();
+            document.getElementById('entry-id').value = id || '';
+            document.getElementById('m-title').innerText = id ? 'Edit ' + page : 'New ' + page;
+            
+            document.getElementById('label-desc').innerText = page === 'CUSTOMERS' ? 'Client Name' : (page === 'JOBS' ? 'Job Name' : 'Description');
+            document.getElementById('fields-contact').classList.toggle('hidden', page !== 'CUSTOMERS');
+            document.getElementById('fields-address').classList.toggle('hidden', page !== 'JOBS' && page !== 'CUSTOMERS');
+            
             if(id) {
-                const item = store.find(i => i.id === id);
-                if(item) {
-                    document.getElementById('f_desc').value = item.description;
-                    document.getElementById('f_amt').value = item.amount;
-                    document.getElementById('f_link').value = item.driveLink || '';
-                }
+                const item = data.find(i => i.id === id);
+                document.getElementById('f-desc').value = item.desc || '';
+                document.getElementById('f-amt').value = item.amt || '';
+                document.getElementById('f-link').value = item.link || '';
+                document.getElementById('f-phone').value = item.phone || '';
+                document.getElementById('f-address').value = item.address || '';
+                document.getElementById('f-cat').value = item.cat || 'PENDING';
+                document.getElementById('f-archived').checked = item.archived || false;
             }
-            document.getElementById('masterModal').classList.remove('hidden');
+            document.getElementById('modal').classList.remove('hidden');
         };
 
-        window.closeModal = () => document.getElementById('masterModal').classList.add('hidden');
+        window.closeModal = () => document.getElementById('modal').classList.add('hidden');
+        window.del = async (id) => { if(confirm('Delete forever?')) await deleteDoc(doc(db, 'records', id)); };
 
-        window.deleteEntry = async (id) => { if(confirm('Permanently delete this entry?')) await deleteDoc(doc(db, 'transactions', id)); };
-
-        document.getElementById('masterForm').addEventListener('submit', async (e) => {
+        document.getElementById('entry-form').onsubmit = async (e) => {
             e.preventDefault();
-            const id = document.getElementById('f_id').value;
-            const data = {
-                description: document.getElementById('f_desc').value,
-                amount: parseFloat(document.getElementById('f_amt').value),
-                driveLink: document.getElementById('f_link').value,
-                type: (['EXPENSE', 'PAYROLL', 'INVOICES'].includes(currentPage)) ? 'EXPENSE' : 'INCOME',
-                category: currentPage === 'DASHBOARD' ? 'GENERAL' : currentPage,
-                date: serverTimestamp()
+            const id = document.getElementById('entry-id').value;
+            let type = (['EXPENSES', 'PAYROLL'].includes(page)) ? 'OUT' : 'IN';
+
+            const payload = {
+                desc: document.getElementById('f-desc').value,
+                amt: parseFloat(document.getElementById('f-amt').value) || 0,
+                link: document.getElementById('f-link').value,
+                phone: document.getElementById('f-phone').value,
+                address: document.getElementById('f-address').value,
+                cat: document.getElementById('f-cat').value,
+                archived: document.getElementById('f-archived').checked,
+                type: type,
+                originPage: page === 'ARCHIVE' ? (id ? data.find(i=>i.id===id).originPage : 'INCOME') : page,
+                updated: serverTimestamp()
             };
-            if(id) await updateDoc(doc(db, 'transactions', id), data);
-            else await addDoc(collection(db, 'transactions'), data);
+            if(id) await updateDoc(doc(db, 'records', id), payload);
+            else await addDoc(collection(db, 'records'), payload);
             closeModal();
+        };
+
+        document.getElementById('search').oninput = (e) => { filter = e.target.value.toLowerCase(); render(); };
+
+        onSnapshot(query(collection(db, 'records'), orderBy("updated", "desc")), (s) => {
+            data = s.docs.map(d => ({id: d.id, ...d.data()}));
+            render();
         });
 
-        document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderUI(); });
+        function render() {
+            const head = document.getElementById('table-head');
+            const body = document.getElementById('table-body');
+            let rev = 0, exp = 0;
 
-        onSnapshot(query(collection(db, 'transactions'), orderBy("date", "desc")), (s) => { store = s.docs.map(d => ({id: d.id, ...d.data()})); renderUI(); });
+            head.innerHTML = `<tr><th class="py-6 px-8">Description</th>${(page === 'CUSTOMERS' || page === 'JOBS') ? `<th class="py-6 px-8">Details</th>` : ''}<th class="py-6 px-8">Status</th><th class="py-6 px-8 text-right">Amount</th><th class="py-6 px-8 text-center">Actions</th></tr>`;
 
-        function renderUI() {
-            const tbody = document.getElementById('main-table-body');
-            let inc = 0, exp = 0;
-            
-            const filtered = store.filter(d => {
-                const matchesSearch = d.description.toLowerCase().includes(searchTerm) || d.category?.toLowerCase().includes(searchTerm);
-                const matchesPage = currentPage === 'DASHBOARD' || d.category === currentPage;
-                return matchesSearch && matchesPage;
+            const filtered = data.filter(d => {
+                const searchMatch = d.desc.toLowerCase().includes(filter);
+                const isArchivePage = page === 'ARCHIVE';
+                const matchesPage = page === 'DASHBOARD' || d.originPage === page;
+                
+                // If on Archive page, show everything that is archived. 
+                // If on any other page, ONLY show items that are NOT archived.
+                if (isArchivePage) return d.archived && searchMatch;
+                return !d.archived && matchesPage && searchMatch;
             });
 
-            tbody.innerHTML = filtered.map(d => {
-                if(d.type === 'INCOME') inc += d.amount; else exp += d.amount;
+            body.innerHTML = filtered.map(d => {
+                if(d.type === 'IN') rev += d.amt; else exp += d.amt;
                 return `
-                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                    <td class="py-6 px-8 font-bold uppercase tracking-tight">${d.description}</td>
-                    <td class="py-6 px-8 text-[10px] text-gray-500 font-black uppercase tracking-widest">${d.category || d.type}</td>
-                    <td class="py-6 px-8">${d.driveLink ? `<a href="${d.driveLink}" target="_blank" class="text-[10px] border border-white/20 px-3 py-1 font-black hover:bg-white hover:text-black">VIEW DOC</a>` : '—'}</td>
-                    <td class="py-6 px-8 text-right mono font-black ${d.type === 'INCOME' ? 'text-green-400' : 'text-red-400'}">${cur.format(d.amount)}</td>
-                    <td class="py-6 px-8 text-center whitespace-nowrap">
-                        <button onclick="openModal('${d.id}')" class="text-[10px] font-black uppercase px-3 py-1 border border-white/10 hover:bg-white hover:text-black mr-2">Edit</button>
-                        <button onclick="deleteEntry('${d.id}')" class="text-[10px] font-black uppercase px-3 py-1 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white">Del</button>
+                <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                    <td class="py-6 px-8 font-black uppercase">${d.desc}</td>
+                    ${(page === 'CUSTOMERS' || page === 'JOBS') ? `<td class="py-6 px-8 text-gray-500">${d.address || d.phone || '—'}</td>` : ''}
+                    <td class="py-6 px-8"><span class="px-3 py-1 bg-white/5 text-[9px] font-black">${d.cat}</span></td>
+                    <td class="py-6 px-8 text-right mono font-black ${d.type === 'IN' ? 'text-green-500' : 'text-red-500'}">${fmt.format(d.amt)}</td>
+                    <td class="py-6 px-8 text-center">
+                        <button onclick="openModal('${d.id}')" class="p-2 text-gray-500 hover:text-white"><i class="fas fa-edit"></i></button>
+                        <button onclick="del('${d.id}')" class="p-2 text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>`;
             }).join('');
 
-            document.getElementById('stat-inc').innerText = cur.format(inc);
-            document.getElementById('stat-exp').innerText = cur.format(exp);
-            document.getElementById('stat-net').innerText = cur.format(inc - exp);
+            document.getElementById('stat-rev').innerText = fmt.format(rev);
+            document.getElementById('stat-exp').innerText = fmt.format(exp);
+            document.getElementById('stat-net').innerText = fmt.format(rev - exp);
         }
     </script>
 </body>
