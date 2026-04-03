@@ -10,12 +10,75 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono&display=swap');
         :root { --accent: #fff; --border: rgba(255, 255, 255, 0.1); --bg: #000; }
         body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; margin: 0; }
-        .sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; border-right: 1px solid var(--border); background: #050505; z-index: 40; display: flex; flex-direction: column; overflow-y: auto; }
-        .nav-link { display: flex; align-items: center; padding: 10px 24px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.6rem; cursor: pointer; transition: all 0.2s; border-left: 2px solid transparent; }
+        
+        .sidebar { 
+            width: 280px; 
+            height: 100vh; 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            border-right: 1px solid var(--border); 
+            background: #050505; 
+            z-index: 40; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+        }
+
+        .nav-link { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px 24px; 
+            color: rgba(255,255,255,0.4); 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em; 
+            font-size: 0.6rem; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-left: 2px solid transparent; 
+        }
+
         .nav-link.active { color: #fff; background: rgba(255,255,255,0.05); border-left: 2px solid var(--accent); }
         .main-content { margin-left: 280px; padding: 4rem; max-width: 1400px; }
         .stat-card { padding: 2rem; border: 1px solid var(--border); background: #080808; }
-        .btn-primary { background: #fff; color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.65rem; padding: 12px 24px; cursor: pointer; border: none; }
+        
+        .btn-primary { 
+            background: #fff; 
+            color: #000; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 0.15em; 
+            font-size: 0.65rem; 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            border: none; 
+        }
+
+        .btn-download {
+            margin: 20px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+
         .form-input { width: 100%; background: #0a0a0a !important; border: 1px solid var(--border) !important; padding: 12px 16px !important; color: #fff !important; font-size: 0.85rem; outline: none !important; }
         .mono { font-family: 'Space Mono', monospace; }
         .action-btn { opacity: 0.3; transition: 0.2s; cursor: pointer; margin-left: 10px; }
@@ -29,7 +92,7 @@
             <h1 class="text-xl font-black tracking-tighter uppercase leading-tight">Joe Westlake LLC</h1>
             <p class="text-[9px] text-gray-500 mt-2 uppercase tracking-[0.2em] font-bold leading-relaxed">Business Management System</p>
         </div>
-        <div class="flex flex-col space-y-1 pb-8">
+        <div class="flex flex-col space-y-1">
             <div onclick="setPage('DASHBOARD')" id="nav-DASHBOARD" class="nav-link active">Overview</div>
             <div onclick="setPage('JOBS')" id="nav-JOBS" class="nav-link">Current Jobs</div>
             <div onclick="setPage('INCOME')" id="nav-INCOME" class="nav-link">Income</div>
@@ -41,6 +104,13 @@
             <div class="pt-4 mt-4 border-t border-white/5">
                 <div onclick="setPage('ARCHIVE')" id="nav-ARCHIVE" class="nav-link text-gray-600">Archive</div>
             </div>
+        </div>
+        
+        <div class="mt-auto">
+            <a href="https://drive.google.com/file/d/16p-0i9u8Usvote9BkjE7-MI1pvMIjjM6/view?usp=sharing" target="_blank" class="btn-download">
+                <i class="fab fa-android text-lg"></i>
+                Download App
+            </a>
         </div>
     </nav>
 
@@ -171,7 +241,6 @@
 
         window.closeModal = () => document.getElementById('masterModal').classList.add('hidden');
 
-        // FIXED DELETE LOGIC
         window.deleteEntry = async (id, collectionName) => {
             if (!id || !collectionName) return;
             if (confirm("Permanently delete this record?")) {
